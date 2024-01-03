@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  nest-app:
+    container_name: nest-app
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      - db
+    environment:
+      - ACCESS_TOKEN_SECRET=asfsdgoikm6581
+      - REFRESH_TOKEN_SECRET=osdfwqefewfg984611
+      - MONGO_URI=mongodb://bunlung:5087@mongo:27017/
+  db:
+    container_name: mongo
+    image: mongo
+    restart: always
+    environment:
+      - MONGO_INITDB_DATABASE=user_db
+      - MONGO_INITDB_ROOT_USERNAME=bunlung
+      - MONGO_INITDB_ROOT_PASSWORD=5087
+    volumes:
+      - mongodata:/etc/mongo  
+    ports:
+      - 27017:27017
+  mongo-express:
+    container_name: mongo-express 
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_BASICAUTH_USERNAME=bunlung
+      - ME_CONFIG_BASICAUTH_PASSWORD=5087   
+      - ME_CONFIG_MONGODB_URL=mongodb://bunlung:5087@mongo:27017/  
+    depends_on:
+      - db  
+volumes:
+  mongodata:
